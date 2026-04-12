@@ -1,4 +1,4 @@
-// Manejo del localStorage
+// Funciones para manejar el Storage. Leer, guardar, eliminar algo, o todo.
 
 export const storage = {
     get(key)  { //traer algo del localStorage

@@ -1,4 +1,4 @@
-// Almacenar el token del usuario
+// Accesos rapidos relacionados con la KEY en el storage.
 
 import { storage } from "./storage";
 

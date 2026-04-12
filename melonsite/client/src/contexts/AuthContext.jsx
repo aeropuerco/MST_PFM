@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service'
 const AuthContext = createContext(null)
 
 // crear la función que va a proveer ese contexto
+// Esto envuelve RouterProvider en main.jsx !!
 
 export const AuthProvider = ({ children }) => {
 
@@ -27,8 +28,8 @@ export const AuthProvider = ({ children }) => {
 
     // función de LOGIN
 
-    const login = useCallback( async (email, password) => {
-            const data = await AuthService.login({ email, password })
+    const login = useCallback( async (name, password) => {
+            const data = await AuthService.login({ name, password })
             const tokenLogin = data.token ?? data?.data?.token;  //el primer data es el de la variable creada. El segundo es el que llega.
             const userLogin = data.user ?? data?.data?.user ?? data?.data;
             

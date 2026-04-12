@@ -7,6 +7,7 @@ import { Home } from './components'
 import { Login, Register, CreatePost, EditorList, Post } from './pages'
 
 import {authStore } from './utils/authStore'
+import { AuthProvider } from './contexts/AuthContext'
 
 
 // layout general
@@ -31,7 +32,7 @@ const Layout = () => {
             <>
                 <NavLink to='/login'>Login | </NavLink> 
                 <NavLink to='/register'>Registro | </NavLink>
-
+                <div>Usuario///ROL</div>
             </>: 
               <>
                 <NavLink to='/createpost'>CreatePost | </NavLink>
@@ -40,7 +41,7 @@ const Layout = () => {
               </>
             }
            
-           <div>Usuario///ROL</div>
+
 
         </div>
       </nav>
@@ -87,8 +88,9 @@ const router = createBrowserRouter(routes)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    
-    <RouterProvider router={router} />
 
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 )
