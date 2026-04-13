@@ -6,20 +6,19 @@ import { createBrowserRouter, RouterProvider, NavLink, Outlet, redirect } from '
 import { Home } from './components'
 import { Login, Register, CreatePost, EditorList, Post } from './pages'
 
-import {authStore } from './utils/authStore'
-import { AuthProvider } from './contexts/AuthContext'
+// No hace falta con el contexto de AuthProvider
+// import {authStore } from './utils/authStore'
+
+import { storage } from './utils/storage'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
+
 
 
 // layout general
 
 const Layout = () => {
 
-  const hasToken = !!authStore.get()  // comprobamos si hay token en el localStorage
-
-  const logout = () => {  // cerrar sesión del usuario
-    authStore.clear()
-    location.href='/'
-  }
+  const {token, logout } = useAuth();
 
   return(
     <div>
@@ -28,7 +27,7 @@ const Layout = () => {
         <div>
             <NavLink to='/'>Inicio | </NavLink>
             <NavLink to='/editorlist'>VerEditores | </NavLink>
-            { !hasToken ?  
+            { !token ?  
             <>
                 <NavLink to='/login'>Login | </NavLink> 
                 <NavLink to='/register'>Registro | </NavLink>
@@ -57,8 +56,12 @@ const Layout = () => {
 // con un redirect, redirigimos al login
 
 const requireAuth = () => {
-  if(!authStore.get()) throw new redirect('./login')
-    return null
+ 
+  const tokenAuth = storage.get('token')
+  if(!tokenAuth) throw redirect('/login')
+    return null;
+
+
 }
 
 
