@@ -5,23 +5,40 @@ import { UserService } from "../../services/user.service"
 
 export const EditorList = () => {
 
-    const editorList = useCallback(async () => {
-        
-        const editors = await UserService.getEditors()
-        
-        return editors
-    }, [])
+  const [ resEditorList, setEditorList ] = useState([])
+  const [error, setError] = useState(null)
+
+  
+  useEffect(() => {
+
+    UserService.getEditors()
+        .then(setEditorList)
+        .catch(err => setError(err.message))
+
+
+  },[])
 
 
   return (
     <>
-        <h2>EDITORLIST //</h2>
-        <div>Editor 1</div>
-        <div>Editor 2</div>
-        <div>Editor 3</div>
+        {error && <p style={{color: 'red'}}>{error}</p>}
 
-        <div>(ADMIN) Alta editor</div>
-        <div>(ADMIN) Eliminar editor</div>
+        <h2>EDITORS LIST //</h2>
+
+        {resEditorList.map((editor) => (
+          <div style={{display: 'flex'}}>
+            <div className='editorList'>{editor.name}</div>
+            <button className="adminBtn">(ADMIN) Eliminar</button>
+          </div>
+        ))}
+
+
+        <div style={{display: 'flex', flexDirection:'column'}}>
+          <input type="text" placeholder="nombre" />
+          <input type="text" placeholder="email" />
+          <input type="text" placeholder="contraseña" />
+        <button>(ADMIN) Alta editor</button>
+        </div>
     </>
     
   )
