@@ -4,7 +4,7 @@ import { AuthService } from "../../services/auth.service"
 export const Register = () => {
     // ESTADOS DEL FORMULARIO Y ESTADOS DE CARGA Y ERROR (UI)
 
-    const [form, setForm] = useState({nombre:'', email:'', edad:'', password:''})
+    const [form, setForm] = useState({name:'', email:'', edad:'', password:''})
     const [loading,setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [ok, setOk] = useState(null)
@@ -22,10 +22,9 @@ export const Register = () => {
     // Validación de los campos del formulario antes de llamar a la API
 
     const validate = () => {
-        if(!form.nombre.trim()) return 'El nombre es obligatorio'
+        if(!form.name.trim()) return 'El nombre es obligatorio'
         if(!form.email.includes('@')) return 'Email no valido'
         if(!form.password || form.password.length < 6) return 'Contra al menos 6 digitos'
-        if(!form.edad && Number.isNaN(Number(form.edad)))
         return null
     }
 
@@ -45,7 +44,7 @@ export const Register = () => {
         try {
             //cogemos el payload, lo que nos da el usuario
             const payload = {
-                nombre: form.nombre.trim(),  //para que no coja espacios
+                name: form.name.trim(),  //para que no coja espacios
                 email: form.email.trim().toLowerCase(),
                 password: form.password,
                 ...(form.edad ? {edad: Number(form.edad)} : {} )
@@ -58,7 +57,7 @@ export const Register = () => {
             setOk('Registro completado!, Ya puedes hacer login')
             
         } catch (err) {
-            setError(err.message || 'Error en el registro')
+            setError(err.response?.data?.message || 'Error en el registro')
         } finally {
             setLoading(false) // termina el proceso de llamada a la API
         }
@@ -71,17 +70,17 @@ export const Register = () => {
             <h2>Register</h2>
 
             <form onSubmit={onSubmit}>
-                <input id="nombre" name="nombre" value={form.nombre} onChange={onChange} autoComplete="name" />
-                <input id="email" name="email" value={form.email} onChange={onChange} autoComplete="email" />
-                <input id="edad" name="edad" value={form.edad} onChange={onChange} inputMode="numeric" />
-                <input id="password" name="password" type="password" value={form.password} onChange={onChange} autoComplete="new-password" />
+                <div style={{display: 'flex', flexDirection:'column'}}>
+                    <input id="name" name="name" placeholder="nombre" value={form.name} onChange={onChange} autoComplete="name" />
+                    <input id="email" name="email" placeholder="email" value={form.email} onChange={onChange} autoComplete="email" />
+                    <input id="password" name="password" type="password" placeholder="password" value={form.password} onChange={onChange} autoComplete="new-password" />
 
-                {error && <div role="alert">{error}</div>}
-                {ok && <div>{ok}</div>}
+                    {error && <div role="alert">{error}</div>}
+                    {ok && <div>{ok}</div>}
 
-                <button type="button" onClick={()=>setForm({nombre:'', email:'', edad:'', password:''})}>Limpiar</button>
-                <button type="submit" disabled={loading}>{loading ? 'Creando...' : 'Registrarme'}</button>
-
+                    <button type="button" onClick={()=>setForm({name:'', email:'', password:''})}>Limpiar</button>
+                    <button type="submit" disabled={loading}>{loading ? 'Creando...' : 'Registrarme'}</button>
+                </div>
             </form>
         </section>
     )

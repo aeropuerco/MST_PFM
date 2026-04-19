@@ -93,8 +93,7 @@ export const EditorList = () => {
             const payload = {
                 name: form.name.trim(),  //para que no coja espacios
                 email: form.email.trim().toLowerCase(),
-                password: form.password,
-                ...(form.edad ? {edad: Number(form.edad)} : {} )
+                password: form.password
             }
 
             // llamamos a la API
@@ -140,7 +139,7 @@ export const EditorList = () => {
                   <input id="name" name="name" value={form.name} onChange={onChange} autoComplete="name" placeholder="nombre"/>
                   <input id="email" name="email" value={form.email} onChange={onChange} autoComplete="email" placeholder="email"/>
                   <input id="password" name="password" type="password" value={form.password} onChange={onChange} autoComplete="new-password" placeholder="contraseña"/>
-                <button type="submit" disabled={loading}>{loading ? 'Creando...' : 'Registrarme'}</button>
+                <button type="submit" disabled={loading}>{loading ? 'Creando...' : 'Alta Nuevo Editor'}</button>
             </div>
           </form>
        )}
