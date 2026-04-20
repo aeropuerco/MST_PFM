@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { UserService } from "../../services/user.service"
 
 //Componentes mios
-import { UserItem } from "../../components/userItem/UserItem"
+import { UserItem } from "../../components/UserItem/UserItem"
 
 
 export const EditorList = () => {
@@ -16,6 +16,8 @@ export const EditorList = () => {
   const [ok, setOk] = useState(null)
   const [loading,setLoading] = useState(false)
   const { token , user } = useAuth()
+
+
   useEffect(() => {
 
     UserService.getEditors()
