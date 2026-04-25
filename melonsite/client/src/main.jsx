@@ -4,7 +4,7 @@ import './index.css'
 
 import { createBrowserRouter, RouterProvider, NavLink, Outlet, redirect } from 'react-router-dom'
 import { Home } from './components'
-import { Login, Register, CreatePost, EditorList, Post } from './pages'
+import { Login, Register, PostEditor, EditorList, Post } from './pages'
 
 // No hace falta con el contexto de AuthProvider
 // import {authStore } from './utils/authStore'
@@ -81,7 +81,8 @@ const routes = [
       {  path: '/login',  element: <Login /> },
       {  path: '/editorlist',  element: <EditorList /> },
       {  path: '/post/:id',  element: <Post /> },
-      {  path: '/createpost',  element: <CreatePost />, loader:requireAuth }   // ruta protegida, especie de middleware para comprobar autenticación antes de dar paso al componente Profile
+      {  path: '/createpost',  element: <PostEditor />, loader:requireAuth },   // ruta protegida, especie de middleware para comprobar autenticación antes de dar paso al componente Profile
+      {  path: '/post/edit/:id',  element: <PostEditor />, loader:requireAuth }   // ruta protegida, especie de middleware para comprobar autenticación antes de dar paso al componente Profile
 
     ]
   }

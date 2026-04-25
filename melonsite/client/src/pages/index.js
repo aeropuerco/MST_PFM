@@ -1,5 +1,5 @@
 export * from './Register/Register' 
-export * from './CreatePost/CreatePost' 
 export * from './Login/Login' 
 export * from './EditorList/EditorList' 
 export * from './Post/Post' 
+export * from './PostEditor/PostEditor' 

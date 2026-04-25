@@ -1,25 +1,47 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AuthService } from "../../services/auth.service"
 import { useAuth } from "../../contexts/AuthContext"
+import { useParams } from "react-router-dom"
 
 //SERVICIOS
 import { PostService } from "../../services/post.service"
+
+// COMPONENTES CUSTOM
 import { EditableContentBlock } from "../../components/EditableContentBlock/EditableContentBlock"
 
 
-export const CreatePost = () => {
+export const PostEditor = () => {
     // ESTADOS DEL FORMULARIO Y ESTADOS DE CARGA Y ERROR (UI)
-    
+
     const { token , user } = useAuth()
+    const [postData, setPostData] = useState({
+        title: '',
+        content_blocks: []
+  
+      })
+    
+    const { id } = useParams();
+
+    console.log("EDITANDO?: ", id)
+  
+
+    // SI el useParams detecta que la ruta carga la id, es que estamos editando, asi que cargamos el post en el postData y se rellenan los bloques
+    useEffect(() => {
+
+      if(id){
+        PostService.fullpost(id)
+        .then(setPostData) 
+        .catch(err => setError(err.message))
+      }
+
+  },[])
+
+
 
 
     // definir useState con el estado vacío
     // este recopilará todo el post
-  const [postData, setPostData] = useState({
-      title: '',
-      content_blocks: []
 
-    })
     
     const [loading,setLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -98,7 +120,7 @@ export const CreatePost = () => {
         try {
             //cogemos el payload, lo que nos da el usuario
             const payload = {
-                author: user.name,
+                
                 title: postData.title.trim(),  //para que no coja espacios
                 content_blocks: postData.content_blocks.map((block) => ({
                       tipo: block.tipo,
@@ -107,10 +129,20 @@ export const CreatePost = () => {
             }
 
             // llamamos a la API
+            let response;
 
-            const data = await PostService.create(payload, token)   /// LINEA DE EJECUCION
-            console.log('Respuesta CREATE POST', data);
-            setOk('POST PUBLICADO!')
+            if (id) {
+                response = await PostService.update(id, payload, token)   /// LINEA DE EJECUCION
+                console.log('Respuesta EDITAR POST', response);
+                setOk('POST MODIFICADO!')
+            } else {
+                response = await PostService.create(payload, token)   /// LINEA DE EJECUCION
+                console.log('Respuesta CREATE POST', response);
+                setOk('POST PUBLICADO!')
+            }
+            
+
+
             
         } catch (err) {
             console.log(err);
@@ -124,7 +156,7 @@ export const CreatePost = () => {
 
     return (
         <section className="card">
-            <h2>CREAR NUEVO POST /// {user.name}</h2>
+            <h2>{id? "EDITAR POST" : "CREAR NUEVO POST"} /// {user.name}</h2>
 
             <form onSubmit={onSubmit}>
                 <div className="title">
@@ -158,7 +190,8 @@ export const CreatePost = () => {
                     <button type="button" onClick={()=> addBlock('imagen')}>+ Imagen</button>
                     <button type="button" onClick={()=> addBlock('code')}>+ Codigo</button>
 
-                    <button type="submit" disabled={loading}>{loading ? 'Creando...' : 'PUBLICAR'}</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? (id? 'Guardando cambios...': 'Publicando...') : (id? 'GUARDAR': 'PUBLICAR')}</button>
                 </div>
 
 
