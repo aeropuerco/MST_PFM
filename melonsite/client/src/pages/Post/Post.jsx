@@ -170,13 +170,20 @@ console.log("AUTHORID", postLoaded?.author?._id)
 
           {error && <div role="alert">{error}</div>}
           {ok && <div>{ok}</div>}
-
+     
+     { user && 
+     
           <form onSubmit={onCommentSubmit}>
-            <div>COMENTAR</div>
-              <textarea name="comment" onChange={onChange} value={newComment.text} id="" placeholder="Escribe tu comentario..."></textarea>
-              <button type="submit" disabled={loading}>
-                            {loading ? 'Publicando...' : 'PUBLICAR COMENTARIO'}</button>
+             <div>COMENTAR</div>
+            <textarea name="comment" onChange={onChange} value={newComment.text} id="" placeholder="Escribe tu comentario..."></textarea>
+            <button type="submit" disabled={loading}>
+                          {loading ? 'Publicando...' : 'PUBLICAR COMENTARIO'}</button>
           </form>
+
+     }
+
+      
+
 
       {console.log("COMMENTS", comments)}
 
