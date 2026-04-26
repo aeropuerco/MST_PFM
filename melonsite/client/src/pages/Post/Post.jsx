@@ -1,52 +1,54 @@
 import { useEffect, useState } from "react"
-import { useAuth } from "../../contexts/AuthContext"
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 
+// CONTEXTOS
+import { useAuth } from "../../contexts/AuthContext"
+
+// SERVICIOS
+import { ContentBlock } from "../../components/ContentBlock/ContentBlock"
 import { PostService } from "../../services/post.service"
 import { CommentService } from "../../services/comment.service"
-import { ContentBlock } from "../../components/ContentBlock/ContentBlock"
 
-import { Link } from 'react-router-dom';
+
+// CUSTOM COMPONENTS
+import { CommentItem } from "../../components/CommentItem/CommentItem"
 
 
 export const Post = () => {
 
-  /* const [user, setUser] = useState(null) */
-  // Sacamos user del contexto. NO hace falta
-
   const { user, token } = useAuth()
   const { id } = useParams()
 
-  const [ postLoaded, loadPost] = useState(null)
-  const [ comments, loadComments] = useState(null)
-
+// ERRORES Y CARGAS
   const [loading,setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [ok, setOk] = useState(null)
-
-  const [newComment, setNewComment] = useState({
-    text: ''
-    
-
-  })
+  
+// POSTS
+  const [ postLoaded, loadPost] = useState(null)
 
   useEffect(() => {
-
       if(!postLoaded){
         PostService.fullpost(id)
         .then(loadPost) 
         .catch(err => setError(err.message))
       }
-
   },[])
+
+// COMENTARIOS
+  const [ comments, loadComments] = useState([])
+  const [newComment, setNewComment] = useState({text: ''})
 
   useEffect(() => {
 
-      if(!comments){
+        console.log("DENTRO DE COMMENTS");
         CommentService.overview(id)
-        .then(loadComments) 
+        .then(data => {
+          console.log("DATOS LLEGADOS:", data);
+          loadComments(data);
+      })
         .catch(err => setError(err.message))
-      }
+
 
   },[])
 
@@ -84,32 +86,54 @@ export const Post = () => {
         const payload = {
             post : id,
             author : user.id,
-            text: newComment.comment  //para que no coja espacios
+            text: newComment.text  //para que no coja espacios
             
         }
 
-        console.log("PAYLOAD COM", payload);
         // llamamos a la API
 
             const response = await CommentService.create(payload, token)   /// LINEA DE EJECUCION
-            console.log('Respuesta CREATE COMMENT', response);
             setOk('COMENTARIO PUBLICADO!')
-
-
             loadComments([ ...comments, response])
-            
             setNewComment({text: ""})
 
 
         
     } catch (err) {
-        console.log(err);
+        console.log("ERROR RESPONSE: " , err);
         setError(err.response?.data?.message || 'Error en el registro')
     } finally {
         setLoading(false) // termina el proceso de llamada a la API
     }
 }
 
+const deleteComment = async (id) => {
+  setError(null) //limpiamos mensajes de error y de ok
+  setOk(null)
+  setLoading(true) //empieza la llamada a la API
+
+  try {
+
+      // llamamos a la API
+
+      const data = await CommentService.delete(id, token)   /// LINEA DE EJECUCION
+
+      const commentsActualizados = comments.filter(item => item._id !== id)
+      loadComments(commentsActualizados)
+      setOk('Editor eliminado')
+      console.log(ok," - ", data);
+      
+  } catch (err) {
+      setError(err.message || 'Error al eliminar comentario')
+  } finally {
+      setLoading(false) // termina el proceso de llamada a la API
+  }
+}
+
+if (!postLoaded) return <div>Cargando post...</div>
+
+console.log("USERID", user?.id)
+console.log("AUTHORID", postLoaded?.author?._id)
 
   return (
     <>
@@ -128,36 +152,47 @@ export const Post = () => {
 
         ))}
         
-
       {
         /* MOSTRAMOS BOTON EDITAR SI EL USER LOGEADO ES EL AUTOR DEL POST */
-       (user.name === postLoaded?.author?.name) && <Link to={'/post/edit/'+ id}>EDITAR</Link>
+
+       (user?.id === postLoaded?.author?._id) && <Link to={'/post/edit/'+ id}>EDITAR</Link>
       }
 
       {
-         /* MOSTRAMOS BOTON EDITAR SI EL USER LOGEADO ES EL AUTOR DEL POST O SI ES UN ADMIN */
-        (user.name === postLoaded?.author?.name || user.role === 'admin') && (<div>ELIMINAR POST</div>)
+        /* MOSTRAMOS BOTON ELIMINAR SI EL USER LOGEADO ES EL AUTOR DEL POST, O SI ES UN ADMIN */
+        (user?.id === postLoaded?.author?._id || user?.role === 'admin') && (
+        <div>ELIMINAR POST</div>
+      )
       }
          
 
-        <div>
+      <div>
 
-        {error && <div role="alert">{error}</div>}
-        {ok && <div>{ok}</div>}
+          {error && <div role="alert">{error}</div>}
+          {ok && <div>{ok}</div>}
 
+          <form onSubmit={onCommentSubmit}>
+            <div>COMENTAR</div>
+              <textarea name="comment" onChange={onChange} value={newComment.text} id="" placeholder="Escribe tu comentario..."></textarea>
+              <button type="submit" disabled={loading}>
+                            {loading ? 'Publicando...' : 'PUBLICAR COMENTARIO'}</button>
+          </form>
 
-      <form onSubmit={onCommentSubmit}>
-          <textarea name="comment" onChange={onChange} value={newComment.text} id="" placeholder="Escribe tu comentario..."></textarea>
-          <button type="submit" disabled={loading}>
-                        {loading ? 'Publicando...' : 'PUBLICAR COMENTARIO'}</button>
-        </form>
-      {comments.map((comment) => (
+      {console.log("COMMENTS", comments)}
 
-        <div key={comment._id} className="comment">{comment.text}</div>
+           {comments.map((comment) => (
+              < CommentItem
+                  id={comment._id}
+                  content={comment.text}
+                  action={deleteComment}
+                  postAuthorId={postLoaded?.author?._id}
+                  commentAuthorName={comment?.author.name}
+                  commentAuthorId={comment.author._id}
+                  key={comment._id}
+              />
+          ))}
 
-      ))}
-
-        </div>
+      </div>
     </>
   )
 }

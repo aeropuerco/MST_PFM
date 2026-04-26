@@ -46,7 +46,7 @@ export const EditorList = () => {
             console.log(ok," - ", data);
             
         } catch (err) {
-            setError(err.message || 'Error en el registro')
+            setError(err.message || 'Error al eliminar editor')
         } finally {
             setLoading(false) // termina el proceso de llamada a la API
         }

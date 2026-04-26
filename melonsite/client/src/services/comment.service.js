@@ -5,7 +5,7 @@ import { http } from './http'
 
 export const CommentService = {
     overview : (id) => http(`/api/comment/post/${id}`, { method: 'GET'}),
-    create : (payload, token) => http('/api/comment/createcomment', { method: 'POST', body:payload, token}),
+    create : (payload, token) => http('/api/comment/create', { method: 'POST', body:payload, token}),
     delete : (id, token) => http(`/api/comment/delete/${id}`, { method: 'DELETE', token})
 }
 

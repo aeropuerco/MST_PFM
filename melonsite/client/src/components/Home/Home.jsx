@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import { PostService } from "../../services/post.service"
-import { PostItem } from '../PostItem/PostItem';
+import { PostItem } from '../../components/postItem/PostItem';
 
 import HomeCSS from './Home.module.css'
 
@@ -24,7 +24,7 @@ export const Home = () => {
 
   
   return (
-    <div>
+    <div key='1'>
         <h2>HOME PAGE /// ULTIMOS POSTS</h2>
 
            <div className={HomeCSS.item}>
