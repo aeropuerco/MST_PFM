@@ -88,7 +88,7 @@ export const PostEditor = () => {
             content_blocks: [...prev.content_blocks, newBlock]
         }))
         
-        console.log("check postData: ", postData);
+        //console.log("check postData: ", postData);
     }
 
     // Eliminar un bloque
@@ -134,15 +134,17 @@ export const PostEditor = () => {
             }
 
             // llamamos a la API
-            let response;
+            //let response;
 
             if (id) {
-                response = await PostService.update(id, payload, token)   /// LINEA DE EJECUCION
-                console.log('Respuesta EDITAR POST', response);
+                //response = await PostService.update(id, payload, token)   /// LINEA DE EJECUCION
+                await PostService.update(id, payload, token)   /// LINEA DE EJECUCION
+                //console.log('Respuesta EDITAR POST', response);
                 setOk('POST MODIFICADO!')
             } else {
-                response = await PostService.create(payload, token)   /// LINEA DE EJECUCION
-                console.log('Respuesta CREATE POST', response);
+                //response = await PostService.create(payload, token)   /// LINEA DE EJECUCION
+                await PostService.create(payload, token)   /// LINEA DE EJECUCION
+                //console.log('Respuesta CREATE POST', response);
                 setOk('POST PUBLICADO!')
             }
             
@@ -151,7 +153,7 @@ export const PostEditor = () => {
 
             
         } catch (err) {
-            console.log(err);
+            //console.log(err);
             setError(err.response?.data?.message || 'Error en el registro')
         } finally {
             setLoading(false) // termina el proceso de llamada a la API

@@ -51,10 +51,10 @@ export const Post = () => {
 
   useEffect(() => {
 
-        console.log("DENTRO DE COMMENTS");
+
         CommentService.overview(id)
         .then(data => {
-          console.log("DATOS LLEGADOS:", data);
+
           loadComments(data);
       })
         .catch(err => setError(err.message))
@@ -110,7 +110,7 @@ const onCommentSubmit = async (e) => {
 
         
     } catch (err) {
-        console.log("ERROR RESPONSE: " , err);
+        //console.log("ERROR RESPONSE: " , err);
         setError(err.response?.data?.message || 'Error en el registro')
     } finally {
         setLoading(false) // termina el proceso de llamada a la API
@@ -126,12 +126,13 @@ const deleteComment = async (id) => {
 
       // llamamos a la API
 
-      const data = await CommentService.delete(id, token)   /// LINEA DE EJECUCION
+      //const data = await CommentService.delete(id, token)   /// LINEA DE EJECUCION CON data para trazar
+      await CommentService.delete(id, token)   /// LINEA DE EJECUCION
 
       const commentsActualizados = comments.filter(item => item._id !== id)
       loadComments(commentsActualizados)
       setOk('Editor eliminado')
-      console.log(ok," - ", data);
+      //console.log(ok," - ", data);
       
   } catch (err) {
       setError(err.message || 'Error al eliminar comentario')
@@ -144,13 +145,16 @@ const deletePost = async () => {
   setError(null) //limpiamos mensajes de error y de ok
   setOk(null)
   setLoading(true) //empieza la llamada a la API
-  console.log("POST DELETE ID: ", id);
+
+  //console.log("POST DELETE ID: ", id);
+
   try {
     
-    const response = await PostService.delete(id, token)
+    //const response = await PostService.delete(id, token)
+    await PostService.delete(id, token)
  
     setOk('Post eliminado')
-    console.log(ok, " - ", response);
+    //console.log(ok, " - ", response);
 
     // Una vez eliminado el post, volvemos a Home con el hook useNavigate
     navigate('/');
@@ -165,8 +169,8 @@ const deletePost = async () => {
 
 if (!postLoaded) return <div>Cargando post...</div>
 
-console.log("USERID", user?.id)
-console.log("AUTHORID", postLoaded?.author?._id)
+// console.log("USERID", user?.id)
+// console.log("AUTHORID", postLoaded?.author?._id)
 
   return (
     <>

@@ -52,8 +52,9 @@ export const Register = () => {
 
             // llamamos a la API
 
-            const data = await AuthService.register(payload)   /// LINEA DE EJECUCION
-            console.log('Respuesta register', data);
+            //const data = await AuthService.register(payload)   /// LINEA DE EJECUCION
+            await AuthService.register(payload)   /// LINEA DE EJECUCION
+            //console.log('Respuesta register', data);
             setOk('Registro completado!, Ya puedes hacer login')
             
         } catch (err) {

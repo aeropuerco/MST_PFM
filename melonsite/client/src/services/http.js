@@ -18,7 +18,7 @@ const parse = async (res) => {
 
     try {
         return JSON.parse(text)
-    } catch (err) {
+    } catch {
         return text
     }
 
@@ -42,7 +42,7 @@ export const http = async (path, { method='GET', body, token, headers }) => {
         //gestiono la respuesta
         const data = await parse(res)
         if(!res.ok) {
-            console.log("http" + res.err);
+            //console.log("http" + res.err);
             const message = (data && (data.err || data,message) || `Error ${res.status}`)
             throw new Error(message)
         }

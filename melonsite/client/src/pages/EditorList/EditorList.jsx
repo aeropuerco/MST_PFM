@@ -40,12 +40,13 @@ export const EditorList = () => {
 
             // llamamos a la API
 
-            const data = await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION
+            //const data = await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION CON DATA PARA TRAZAR
+            await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION
 
             const listaActualizada = resEditorList.filter(item => item._id !== id)
             setEditorList(listaActualizada)
             setOk('Editor eliminado')
-            console.log(ok," - ", data);
+            //console.log(ok," - ", data);
             
         } catch (err) {
             setError(err.message || 'Error al eliminar editor')
@@ -124,7 +125,6 @@ export const EditorList = () => {
   /* ENVIAR MINI-FORMULARIO DE REGISTRO DE EDITORES, SOLO VISIBLE PARA ADMINS - Z */
 
 
-
   
   return (
     <>
@@ -155,6 +155,8 @@ export const EditorList = () => {
        )}
 
 
+        {error && <div role="alert">{error}</div>}
+        {ok && <div>{ok}</div>}
 
 
 

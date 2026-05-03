@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
             const tokenLogin = data.token ?? data?.data?.token;  //el primer data es el de la variable creada. El segundo es el que llega.
             const userLogin = data.user ?? data?.data?.user ?? data?.data;
             
-            console.log("datos recibidos: ", data);
+            //console.log("datos recibidos: ", data);
 
             if(!tokenLogin) throw new Error("El servidor de backend no ha devuelto el login")
             
