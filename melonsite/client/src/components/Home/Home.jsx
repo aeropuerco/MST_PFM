@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import { PostService } from "../../services/post.service"
-import { PostItem } from '../../components/postItem/PostItem';
+import { PostItem } from '../../components/PostItem/PostItem';
 
 import HomeCSS from './Home.module.css'
 
