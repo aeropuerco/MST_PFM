@@ -17,7 +17,7 @@ export const ContentBlock = ({ tipo, children}) => {
 
         case 'imagen':
             return (
-                <div className={contentBlockStyle.imagen} background-image={children}></div>
+                <div className={contentBlockStyle.imagen} style={{backgroundImage: `url(${children})`}} ></div>
              )
 
         case 'subtitulo':

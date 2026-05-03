@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { AuthService } from "../../services/auth.service"
 import { useAuth } from "../../contexts/AuthContext"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 
 //SERVICIOS
 import { PostService } from "../../services/post.service"
@@ -16,7 +16,7 @@ import postEditorStyle from './PostEditor.module.css'
 export const PostEditor = () => {
     // ESTADOS DEL FORMULARIO Y ESTADOS DE CARGA Y ERROR (UI)
 
-    const { token , user } = useAuth()
+    const { token } = useAuth()
     const [postData, setPostData] = useState({
         title: '',
         content_blocks: []
@@ -25,8 +25,10 @@ export const PostEditor = () => {
     
     const { id } = useParams();
 
-    console.log("EDITANDO?: ", id)
-  
+    // para navegación tras respuesta. Hook nuevo
+    const navigate = useNavigate();
+
+
 
     // SI el useParams detecta que la ruta carga la id, es que estamos editando, asi que cargamos el post en el postData y se rellenan los bloques
     useEffect(() => {
@@ -144,7 +146,8 @@ export const PostEditor = () => {
                 setOk('POST PUBLICADO!')
             }
             
-
+            // Una vez guardado el post, volvemos a Posts con el hook useNavigate
+            navigate(`/post/${id}`);
 
             
         } catch (err) {

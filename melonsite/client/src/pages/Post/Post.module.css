@@ -45,3 +45,10 @@
         color:rgb(164, 164, 164);
     }
 }
+
+
+.alert{
+    border:1px solid blue;
+    padding:20px;
+    margin-bottom:20px;
+}

@@ -130,7 +130,7 @@ export const EditorList = () => {
     <>
         {error && <p style={{color: 'red'}}>{error}</p>}
 
-        <label>EDITORS LIST</label>
+        <label>LISTA DE EDITORES</label>
         
             <hr />
         {resEditorList.map((editor) => (

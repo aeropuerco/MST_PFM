@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 
 // CONTEXTOS
 import { useAuth } from "../../contexts/AuthContext"
 
 // SERVICIOS
-import { ContentBlock } from "../../components/ContentBlock/ContentBlock"
 import { PostService } from "../../services/post.service"
 import { CommentService } from "../../services/comment.service"
 
 
 // CUSTOM COMPONENTS
 import { CommentItem } from "../../components/CommentItem/CommentItem"
+import { ContentBlock } from "../../components/ContentBlock/ContentBlock"
 
 // UTILS
 import { dateFormat } from '../../utils/dateFormat'
@@ -25,6 +25,9 @@ export const Post = () => {
   const { user, token } = useAuth()
   const { id } = useParams()
 
+  // para navegación tras respuesta. Hook nuevo
+  const navigate = useNavigate();
+
 // ERRORES Y CARGAS
   const [loading,setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -32,6 +35,7 @@ export const Post = () => {
   
 // POSTS
   const [ postLoaded, loadPost] = useState(null)
+
 
   useEffect(() => {
       if(!postLoaded){
@@ -64,20 +68,20 @@ export const Post = () => {
   if (!postLoaded) return <p>Cargando post...</p>;
 
   
-  const onChange = (e) => {
+const onChange = (e) => {
     const { value  } = e.target;
     setNewComment ({text: value} )
 
 }
 
-  const validate = () => {
+const validate = () => {
     /*  if(!form.name.trim()) return 'El nombre es obligatorio'
      if(!form.email.includes('@')) return 'Email no valido'
      if(!form.password || form.password.length < 6) return 'Contra al menos 6 digitos' */
      return null
  }
 
-  const onCommentSubmit = async (e) => {
+const onCommentSubmit = async (e) => {
     e.preventDefault() // evita la recarga despues del submit
     setError(null) //limpiamos mensajes de error y de ok
     setOk(null)
@@ -136,6 +140,29 @@ const deleteComment = async (id) => {
   }
 }
 
+const deletePost = async () => {
+  setError(null) //limpiamos mensajes de error y de ok
+  setOk(null)
+  setLoading(true) //empieza la llamada a la API
+  console.log("POST DELETE ID: ", id);
+  try {
+    
+    const response = await PostService.delete(id, token)
+ 
+    setOk('Post eliminado')
+    console.log(ok, " - ", response);
+
+    // Una vez eliminado el post, volvemos a Home con el hook useNavigate
+    navigate('/');
+    
+  } catch (err) {
+      setError(err.message || 'Error al eliminar el Post')
+  } finally {
+      setLoading(false) // termina el proceso de llamada a la API
+  }
+}
+
+
 if (!postLoaded) return <div>Cargando post...</div>
 
 console.log("USERID", user?.id)
@@ -149,8 +176,9 @@ console.log("AUTHORID", postLoaded?.author?._id)
             <div className={postStyle.date}>{dateFormat(postLoaded.date)}</div>
             <hr/>
 
-            {postLoaded?.content_blocks.map((block) => (
-            
+            {postLoaded?.content_blocks.map((block) => ( 
+
+/* PINTAMOS LOS BLOQUES QUE TENGA EL POST. COMPONENTE */
 
               < ContentBlock key={block._id} tipo={block.tipo} >
                 {block.valor}
@@ -161,16 +189,17 @@ console.log("AUTHORID", postLoaded?.author?._id)
 
 
             {
-        /* MOSTRAMOS BOTON EDITAR SI EL USER LOGEADO ES EL AUTOR DEL POST */
+/* MOSTRAMOS BOTON EDITAR SI EL USER LOGEADO ES EL AUTOR DEL POST */
 
        (user?.id === postLoaded?.author?._id) && 
           <Link className='mel_button' to={'/post/edit/'+ id}>EDITAR</Link>
       }
 
       {
-        /* MOSTRAMOS BOTON ELIMINAR SI EL USER LOGEADO ES EL AUTOR DEL POST, O SI ES UN ADMIN */
+/* MOSTRAMOS BOTON ELIMINAR SI EL USER LOGEADO ES EL AUTOR DEL POST, O SI ES UN ADMIN */
         (user?.id === postLoaded?.author?._id || user?.role === 'admin') && (
-           <button className='mel_button'>ELIMINAR POST</button>
+           <button className='mel_button' onClick={deletePost}>ELIMINAR POST</button>
+           /* PENDIENTE AÑADIR UNA VENTANA DE CONFIRMACION */
       )
       }
 
@@ -183,6 +212,8 @@ console.log("AUTHORID", postLoaded?.author?._id)
           {error && <div role="alert">{error}</div>}
           {ok && <div>{ok}</div>}
      
+{/* BLOQUE DE EDICION DE COMENTARIOS, SOLO SI HA HECHO LOGIN */}
+
      { user && 
      
           <form className={postStyle.commentBox_container} onSubmit={onCommentSubmit}>
@@ -194,10 +225,16 @@ console.log("AUTHORID", postLoaded?.author?._id)
 
      }
 
+
+{/* CASO SIN LOGIN, MUESTRA AVISO DE REGISTRATE */}
+     { !user &&
+        <div className={postStyle.alert}>Registrate como visitante para comentar en Posts como este.</div>
+     }
+
       
 
 
-      {console.log("COMMENTS", comments)}
+{/* PINTAMOS LOS N COMENTARIOS QUE TENGA EL POST. COMPONENTE */}
 
            {comments.map((comment) => (
               < CommentItem
