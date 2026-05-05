@@ -15,7 +15,7 @@ import { Login, Register, PostEditor, EditorList, Post } from './pages'
 import { storage } from './utils/storage'
 import { AuthProvider } from './contexts/AuthContext'
 import { Layout } from './components/Layout/Layout'
-
+import { NotFound } from './components/NotFound/NotFound'
 
 
 
@@ -44,7 +44,9 @@ const routes = [
       {  path: '/editorlist',  element: <EditorList /> },
       {  path: '/post/:id',  element: <Post /> },
       {  path: '/createpost',  element: <PostEditor />, loader:requireAuth },   // ruta protegida, especie de middleware para comprobar autenticación antes de dar paso al componente Profile
-      {  path: '/post/edit/:id',  element: <PostEditor />, loader:requireAuth }   // ruta protegida, especie de middleware para comprobar autenticación antes de dar paso al componente Profile
+      {  path: '/post/edit/:id',  element: <PostEditor />, loader:requireAuth },   // ruta protegida, especie de middleware para comprobar autenticación antes de dar paso al componente Profile
+      {  path: '/404',  element: <NotFound /> },   // 404
+      {  path: '*',  element: <NotFound /> }   // 404
 
     ]
   }

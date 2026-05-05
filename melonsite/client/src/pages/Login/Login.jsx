@@ -1,9 +1,13 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"/* 
+import { useNavigate, useSearchParams } from "react-router-dom"
+
+/* 
 import { AuthService } from "../../services/auth.service"
 import { authStore } from "../../utils/authStore"
 import { storage } from "../../utils/storage" */
 // Estos van ya en el contexto
+
+
 import { useAuth } from "../../contexts/AuthContext"
 
 
@@ -21,7 +25,9 @@ export const Login = () => {
     const [error, setError] = useState(null)
     const [ok, setOk] = useState(null)
 
-    
+    // Parametros en el enlace
+    const [searchParams] = useSearchParams()
+    const alertMessages = searchParams.get('alert');
 
     // Gestión de los input del formulario
 
@@ -54,6 +60,16 @@ export const Login = () => {
   return (
     <section className="card">
       <label>INICIAR SESIÓN</label>
+
+
+      {/* DETECTAMOS SI VIENE REDIRIGIDO DE 401, token caducado */}
+      {alertMessages === 'token_expired' && (
+                <div>
+                    Tu sesión ha expirado. Por favor, vuelve a identificarte.
+                </div>
+            )}
+
+
       <form className="space-y" onSubmit={onSubmit}>
 <hr />
         <div className="field">

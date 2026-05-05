@@ -9,6 +9,9 @@ import { PostService } from "../../services/post.service"
 // COMPONENTES CUSTOM
 import { EditableContentBlock } from "../../components/EditableContentBlock/EditableContentBlock"
 
+// CUSTOM HOOKs
+import { useSessionCheck } from "../../hooks/useSessionCheck"
+
 //CSS
 import postEditorStyle from './PostEditor.module.css'
 
@@ -28,7 +31,8 @@ export const PostEditor = () => {
     // para navegación tras respuesta. Hook nuevo
     const navigate = useNavigate();
 
-
+  // para gestionar status de respuestas. CUSTOM HOOK 
+    const {checkResponse} = useSessionCheck();
 
     // SI el useParams detecta que la ruta carga la id, es que estamos editando, asi que cargamos el post en el postData y se rellenan los bloques
     useEffect(() => {
@@ -103,9 +107,22 @@ export const PostEditor = () => {
     // Validación de los campos del formulario antes de llamar a la API
 
     const validate = () => {
-       /*  if(!form.name.trim()) return 'El nombre es obligatorio'
-        if(!form.email.includes('@')) return 'Email no valido'
-        if(!form.password || form.password.length < 6) return 'Contra al menos 6 digitos' */
+        
+        if(!postData.title.trim()) return 'El titulo es obligatorio'
+
+        // Si no hay bloques
+        if (postData.content_blocks.length === 0) {
+            return 'El post debe tener al menos un bloque de contenido';
+        }
+
+         // Buscar bloques vacios
+
+        const emptyBlock = postData.content_blocks.find(block => !block.valor.trim());
+
+        if (emptyBlock) {
+            return `El bloque de tipo "${emptyBlock.tipo}" no puede estar vacío`;
+        }
+
         return null
     }
 
@@ -137,13 +154,17 @@ export const PostEditor = () => {
             //let response;
 
             if (id) {
-                //response = await PostService.update(id, payload, token)   /// LINEA DE EJECUCION
-                await PostService.update(id, payload, token)   /// LINEA DE EJECUCION
+                //response = await PostService.update(id, payload, token)   /// LINEA DE EJECUCION para console.log
+                // await PostService.update(id, payload, token)   /// LINEA DE EJECUCION SIN HOOK
+                await checkResponse(() => PostService.update(id, payload, token))   /// LINEA DE EJECUCION CON HOOK
+                
                 //console.log('Respuesta EDITAR POST', response);
                 setOk('POST MODIFICADO!')
             } else {
-                //response = await PostService.create(payload, token)   /// LINEA DE EJECUCION
-                await PostService.create(payload, token)   /// LINEA DE EJECUCION
+                //response = await PostService.create(payload, token)   /// LINEA DE EJECUCION para console.log
+                //await PostService.create(payload, token)   /// LINEA DE EJECUCION SIN HOOK
+                await checkResponse(() => PostService.create(payload, token))   /// LINEA DE EJECUCION CON HOOK
+
                 //console.log('Respuesta CREATE POST', response);
                 setOk('POST PUBLICADO!')
             }

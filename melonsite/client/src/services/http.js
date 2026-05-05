@@ -43,8 +43,13 @@ export const http = async (path, { method='GET', body, token, headers }) => {
         const data = await parse(res)
         if(!res.ok) {
             //console.log("http" + res.err);
-            const message = (data && (data.err || data,message) || `Error ${res.status}`)
-            throw new Error(message)
+            const message  = (data && (data.err || data.message) || `Error ${res.status}`)
+            const errorObj = new Error(message);
+
+            errorObj.status = res.status;
+            
+            console.log("errorMSG en http", errorObj.status)
+            throw errorObj;
         }
 
         //devolver la respuesta

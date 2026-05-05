@@ -6,6 +6,10 @@ import { UserService } from "../../services/user.service"
 //Componentes mios
 import { UserItem } from "../../components/UserItem/UserItem"
 
+// CUSTOM HOOKs
+import { useSessionCheck } from "../../hooks/useSessionCheck"
+
+
 //CSS
 import EditorListStyle from './EditorList.module.css'
 
@@ -18,6 +22,9 @@ export const EditorList = () => {
   const [ok, setOk] = useState(null)
   const [loading,setLoading] = useState(false)
   const { token , user } = useAuth()
+
+  // para gestionar status de respuestas. CUSTOM HOOK 
+ const {checkResponse} = useSessionCheck();
 
 
   useEffect(() => {
@@ -41,7 +48,8 @@ export const EditorList = () => {
             // llamamos a la API
 
             //const data = await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION CON DATA PARA TRAZAR
-            await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION
+            //await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION SIN CUSTOM HOOK
+            await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION CON CUSTOM HOOK
 
             const listaActualizada = resEditorList.filter(item => item._id !== id)
             setEditorList(listaActualizada)
@@ -79,7 +87,7 @@ export const EditorList = () => {
     const validate = () => {
       if(!form.name.trim()) return 'El nombre es obligatorio'
       if(!form.email.includes('@')) return 'Email no valido'
-      if(!form.password || form.password.length < 6) return 'Contra al menos 6 digitos'
+      if(!form.password || form.password.length < 6) return 'Contraseña al menos 6 digitos'
       return null
   }
 
@@ -104,13 +112,14 @@ export const EditorList = () => {
             // llamamos a la API
 
 
-            const data = await UserService.registerEditor(payload, token)   /// LINEA DE EJECUCION
+            //const data = await UserService.registerEditor(payload, token)   /// LINEA DE EJECUCION SIN CUSTOM HOOK
+            const data = await checkResponse(() => UserService.registerEditor(payload, token))   /// LINEA DE EJECUCION CON CUSTOM HOOK
 
-            setOk('Registro de editor completado!, Ya puede hacer login')
+            setOk('Registro de editor completado! Ya puede hacer login', data)
 
-            const nuevoEditor = data;
+            const nuevoEditor = data.user;
             setEditorList([ ...resEditorList, nuevoEditor])
-            
+    
             setForm(formularioReset)
 
 

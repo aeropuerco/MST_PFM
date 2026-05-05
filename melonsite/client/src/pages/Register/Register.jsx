@@ -24,7 +24,7 @@ export const Register = () => {
     const validate = () => {
         if(!form.name.trim()) return 'El nombre es obligatorio'
         if(!form.email.includes('@')) return 'Email no valido'
-        if(!form.password || form.password.length < 6) return 'Contra al menos 6 digitos'
+        if(!form.password || form.password.length < 6) return 'Contraseña al menos 6 digitos'
         return null
     }
 
@@ -73,8 +73,8 @@ export const Register = () => {
 
             <form onSubmit={onSubmit}>
                 <div style={{display: 'flex', flexDirection:'column'}}>
-                    <input id="name" name="name" placeholder="nombre" value={form.name} onChange={onChange} autoComplete="name" />
-                    <input id="email" name="email" placeholder="email" value={form.email} onChange={onChange} autoComplete="email" />
+                    <input id="name" name="name" type="text" placeholder="nombre" value={form.name} onChange={onChange} autoComplete="username" />
+                    <input id="email" name="email" type="email" placeholder="email" value={form.email} onChange={onChange} autoComplete="email" />
                     <input id="password" name="password" type="password" placeholder="password" value={form.password} onChange={onChange} autoComplete="new-password" />
 
                     {error && <div role="alert">{error}</div>}

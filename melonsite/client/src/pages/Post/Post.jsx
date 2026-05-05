@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 
+// CUSTOM HOOKs
+import { useSessionCheck } from "../../hooks/useSessionCheck"
+
 // CONTEXTOS
 import { useAuth } from "../../contexts/AuthContext"
 
@@ -27,6 +30,10 @@ export const Post = () => {
 
   // para navegación tras respuesta. Hook nuevo
   const navigate = useNavigate();
+
+  // para gestionar status de respuestas. CUSTOM HOOK 
+ const {checkResponse} = useSessionCheck();
+
 
 // ERRORES Y CARGAS
   const [loading,setLoading] = useState(false)
@@ -64,7 +71,7 @@ export const Post = () => {
 
 
 
-  if (error) return <p>Error: {error}</p>;
+
   if (!postLoaded) return <p>Cargando post...</p>;
 
   
@@ -75,9 +82,8 @@ const onChange = (e) => {
 }
 
 const validate = () => {
-    /*  if(!form.name.trim()) return 'El nombre es obligatorio'
-     if(!form.email.includes('@')) return 'Email no valido'
-     if(!form.password || form.password.length < 6) return 'Contra al menos 6 digitos' */
+    if(!newComment.text.trim()) return 'No has escrito ningun comentario'
+     
      return null
  }
 
@@ -102,7 +108,10 @@ const onCommentSubmit = async (e) => {
 
         // llamamos a la API
 
-            const response = await CommentService.create(payload, token)   /// LINEA DE EJECUCION
+            // const response = await CommentService.create(payload, token)   /// LINEA DE EJECUCION sin Hook
+            // Pasamos las request por checkRequest del custom Hook useSessionCheck, para comprobar si devuelve 401 (token expirado)
+            const response = await checkResponse(() =>CommentService.create(payload, token))   /// LINEA DE EJECUCION con CUSTOM Hook
+
             setOk('COMENTARIO PUBLICADO!')
             loadComments([ ...comments, response])
             setNewComment({text: ""})
@@ -127,7 +136,10 @@ const deleteComment = async (id) => {
       // llamamos a la API
 
       //const data = await CommentService.delete(id, token)   /// LINEA DE EJECUCION CON data para trazar
-      await CommentService.delete(id, token)   /// LINEA DE EJECUCION
+      //await CommentService.delete(id, token)   /// LINEA DE EJECUCION SIN CUSTOM HOOK
+
+      // Pasamos las request por checkRequest del custom Hook useSessionCheck, para comprobar si devuelve 401 (token expirado)
+      await checkResponse(() => CommentService.delete(id, token))  /// LINEA DE EJECUCION
 
       const commentsActualizados = comments.filter(item => item._id !== id)
       loadComments(commentsActualizados)
@@ -151,7 +163,9 @@ const deletePost = async () => {
   try {
     
     //const response = await PostService.delete(id, token)
-    await PostService.delete(id, token)
+    //await PostService.delete(id, token)
+    // Pasamos las request por checkRequest del custom Hook useSessionCheck, para comprobar si devuelve 401 (token expirado)
+    await checkResponse(() => PostService.delete(id, token)) 
  
     setOk('Post eliminado')
     //console.log(ok, " - ", response);
