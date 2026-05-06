@@ -84,10 +84,13 @@ export const Login = () => {
         </div>
 
         {error && <div className="error">{error}</div>}
-
+        {ok && <div>{ok}</div>}
+        
         <div className="row" style={{justifyContent:'flex-end'}}>
           <button type="submit" className="mel_button" disabled={loading}>{loading?'Iniciando sesión ...':'Iniciar sesión'}</button>
         </div>
+
+        <p style={{marginTop:"40px",fontSize:".9rem"}}>Nota para revisores: El token caduca en 10 min, para demostración de la gestión de token caducado</p>
 
       </form>
     </section>

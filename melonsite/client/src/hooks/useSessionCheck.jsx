@@ -11,13 +11,13 @@ export const useSessionCheck = () => {
     const checkResponse = async (request) => {
         try {
             // Se intenta procesar la petición 
-            console.log("checkResponse!", request)
+            //console.log("checkResponse!", request)
             return await request();
         } catch (err) {
-            console.log("checkResponseERROR: ", err)
+           // console.log("checkResponseERROR: ", err)
             // Detectamos si llega el 401, token caducado
             if (err.status === 401) {
-                console.log("Token caducado detectado");
+                //console.log("Token caducado detectado");
                 logout();
                 navigate('/login?alert=token_expired');
             }

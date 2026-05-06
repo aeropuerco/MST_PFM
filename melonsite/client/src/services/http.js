@@ -47,8 +47,9 @@ export const http = async (path, { method='GET', body, token, headers }) => {
             const errorObj = new Error(message);
 
             errorObj.status = res.status;
+        
             
-            console.log("errorMSG en http", errorObj.status)
+            //console.log("errorMSG en http", errorObj.status)
             throw errorObj;
         }
 
