@@ -225,7 +225,7 @@ export const PostEditor = () => {
                             <button className='mel_button' type="button" onClick={()=> addBlock('parrafo')}>+ Parrafo</button>
                             <button className='mel_button' type="button" onClick={()=> addBlock('subtitulo')}>+ Subtitulo</button>
                             <button className='mel_button' type="button" onClick={()=> addBlock('imagen')}>+ Imagen</button>
-                            <button className='mel_button' type="button" onClick={()=> addBlock('code')}>+ Codigo</button>
+                            <button className='mel_button' type="button" onClick={()=> addBlock('codigo')}>+ Codigo</button>
                         </div>
                         <button className='mel_button red'type="submit" disabled={loading}>
                             {loading ? (id? 'Guardando cambios...': 'Publicando...') : (id? '💾 GUARDAR': 'PUBLICAR')}</button>

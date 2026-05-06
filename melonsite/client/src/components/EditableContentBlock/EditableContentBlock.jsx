@@ -35,7 +35,7 @@ export const EditableContentBlock = ({ block, index, onChange, onRemove}) => {
                 onChange={(e) => onChange(index, e.target.value)}/>
             )
 
-        case 'code':
+        case 'codigo':
             return (
                 <textarea
                 className={EditableContentBlockStyle.codeBox}
