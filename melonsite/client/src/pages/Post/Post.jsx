@@ -143,7 +143,7 @@ const deleteComment = async (id) => {
 
       const commentsActualizados = comments.filter(item => item._id !== id)
       loadComments(commentsActualizados)
-      setOk('Editor eliminado')
+      setOk('Comentario eliminado')
       //console.log(ok," - ", data);
       
   } catch (err) {

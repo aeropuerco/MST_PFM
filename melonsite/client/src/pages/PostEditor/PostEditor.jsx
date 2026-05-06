@@ -151,31 +151,32 @@ export const PostEditor = () => {
             }
 
             // llamamos a la API
-            //let response;
+            // Inicio de variable que recibirá la respuesta
+            let response;
 
             if (id) {
-                //response = await PostService.update(id, payload, token)   /// LINEA DE EJECUCION para console.log
-                // await PostService.update(id, payload, token)   /// LINEA DE EJECUCION SIN HOOK
-                await checkResponse(() => PostService.update(id, payload, token))   /// LINEA DE EJECUCION CON HOOK
                 
-                //console.log('Respuesta EDITAR POST', response);
+                // response = await PostService.update(id, payload, token)   /// LINEA DE EJECUCION SIN HOOK
+                response = await checkResponse(() => PostService.update(id, payload, token))   /// LINEA DE EJECUCION CON HOOK
+                
+
                 setOk('POST MODIFICADO!')
             } else {
-                //response = await PostService.create(payload, token)   /// LINEA DE EJECUCION para console.log
-                //await PostService.create(payload, token)   /// LINEA DE EJECUCION SIN HOOK
-                await checkResponse(() => PostService.create(payload, token))   /// LINEA DE EJECUCION CON HOOK
-
-                //console.log('Respuesta CREATE POST', response);
+                //response = await PostService.create(payload, token)  /// LINEA DE EJECUCION SIN HOOK
+                response = await checkResponse(() => PostService.create(payload, token))   /// LINEA DE EJECUCION CON HOOK
                 setOk('POST PUBLICADO!')
             }
             
-            // Una vez guardado el post, volvemos a Posts con el hook useNavigate
-            navigate(`/post/${id}`);
+            const targetId = response._id || response.id;
+
+            console.log('ID objetivo', targetId);
+            // Una vez guardado el post, volvemos a Posts con el hook useNavigate y con el id objetivo que viene de vuelta en la respuesta
+            navigate(`/post/${targetId}`);
 
             
         } catch (err) {
             //console.log(err);
-            setError(err.response?.data?.message || 'Error en el registro')
+            setError(err.response?.data?.message || 'Error en el guardado del post')
         } finally {
             setLoading(false) // termina el proceso de llamada a la API
         }
