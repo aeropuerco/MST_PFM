@@ -49,7 +49,7 @@ export const EditorList = () => {
 
             //const data = await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION CON DATA PARA TRAZAR
             //await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION SIN CUSTOM HOOK
-            await UserService.deleteEditor(id, token)   /// LINEA DE EJECUCION CON CUSTOM HOOK
+            await checkResponse(() => UserService.deleteEditor(id, token))   /// LINEA DE EJECUCION CON CUSTOM HOOK
 
             const listaActualizada = resEditorList.filter(item => item._id !== id)
             setEditorList(listaActualizada)
