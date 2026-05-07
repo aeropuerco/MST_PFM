@@ -18,7 +18,12 @@
     line-height: 
     42px;
 }
-
+.author{
+    font-size: 0.8em;
+    &::before{
+        content: 'por ';
+    }
+}
 .exerpt{
     font-size: 1.2em;
     color:rgb(18, 22, 41);

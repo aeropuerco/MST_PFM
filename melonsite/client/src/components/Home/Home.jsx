@@ -32,12 +32,13 @@ export const Home = () => {
         
                 {resPostList.map((post) => (
                   <>
-                    {/* {console.log("EA" , post)} */}
+                    {/* {console.log("ITEM HOME" , post)} */}
 
                     <Link to={'/post/'+ post._id}>
                       <PostItem 
                         id={post._id}
                         title={post.title}
+                        author={post?.author?.name}
                         exerpt={post.content_blocks[0].valor}
                         date={post.date}
                         key={post._id}
