@@ -155,7 +155,7 @@ export const EditorList = () => {
           <div  className={EditorListStyle.registerEditor}>
               <label htmlFor="">Alta de Nuevo Editor</label>
               <form onSubmit={onSubmit}>  
-                  <input id="name" name="name" value={form.name} onChange={onChange} autoComplete="name" placeholder="nombre"/>
+                  <input id="name" name="name" value={form.name} onChange={onChange} autoComplete="username"  placeholder="nombre"/>
                   <input id="email" name="email" value={form.email} onChange={onChange} autoComplete="email" placeholder="email"/>
                   <input id="password" name="password" type="password" value={form.password} onChange={onChange} autoComplete="new-password" placeholder="contraseña"/>
                 <button type="submit" className='mel_button red' disabled={loading}>{loading ? 'Creando...' : 'Crear cuenta'}</button>
