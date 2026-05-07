@@ -50,7 +50,7 @@ export const Login = () => {
           navigate('/')
 
       } catch (err) {
-        setError(err.message || 'Error al iniciar sesión')
+        setError(`${err.message} : Nombre de usuario o contraseña incorrectos`)
       } finally {
         setLoading(false)
       }
